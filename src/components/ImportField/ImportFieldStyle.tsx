@@ -3,14 +3,16 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 
 export const Background = styled.div`
   background: rgba(0, 0, 0, 0.8);
-  position: fixed;
+  position: absolute;
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-flow: column nowrap;
   overflow: auto;
+  padding: 1em;
+  box-sizing: border-box;
 `;
 
 export const Input = styled.input`
@@ -65,11 +67,13 @@ export const ChooseLink = styled.label`
 
 export const ImageWrapper = styled.div`
   height: 200px;
+  max-width: 100%;
   margin: 2em;
 `;
 
 export const Image = styled.img`
-  height: 100%;
+  max-height: 100%;
+  max-width: 100%;
 `;
 
 export const CloseButton = styled.button`
