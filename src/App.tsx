@@ -30,9 +30,7 @@ function App() {
       <Switch>
         {authContext.isLoggedIn && (
           <>
-            <Route exact path="/">
-              <Dashboard />
-            </Route>
+            <Route exact path="/" component={Dashboard} />
             <Route path="*">
               <Redirect to="/" />
             </Route>
@@ -40,9 +38,7 @@ function App() {
         )}
         {!authContext.isLoggedIn && (
           <>
-            <Route exact path="/login">
-              <Login />
-            </Route>
+            <Route exact path="/login" component={Login} />
             <Route path="*">
               <Redirect to="/login" />
             </Route>

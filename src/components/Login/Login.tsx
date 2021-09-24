@@ -22,6 +22,7 @@ const Login = () => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential?.accessToken;
         authContext.login(token);
+        authContext.setName(result.user.displayName);
       })
       .catch((err) => {
         console.log(err);
@@ -34,9 +35,9 @@ const Login = () => {
         <Title>Sign in with...</Title>
         <CardWrapper>
           <Link to="/">
-          <LoginButton onClick={authGoogle}>
-            <FaGoogle />
-          </LoginButton>
+            <LoginButton onClick={authGoogle}>
+              <FaGoogle />
+            </LoginButton>
           </Link>
         </CardWrapper>
       </LoginCard>
