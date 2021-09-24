@@ -7,15 +7,24 @@ import {
   LoginButton,
 } from "./LoginStyles";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+import { useContext } from "react";
+import AuthContext from "../../store/auth-context";
 
 const Login = () => {
+  const authContext = useContext(AuthContext);
+
   const authGoogle = () => {
     let provider = new GoogleAuthProvider();
     let auth = getAuth();
     signInWithPopup(auth, provider)
-    .then((result) => {
-        console.log(result)
-    })
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential?.accessToken;
+        authContext.login(token);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (

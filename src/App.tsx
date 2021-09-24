@@ -2,7 +2,7 @@ import Login from "./components/Login/Login";
 import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCq5TAxsEifb6pcMiTHx382pfwJvxzRi5Q",
+  apiKey: process.env.REACT_APP_API_KEY,
   authDomain: "photomap-6ef26.firebaseapp.com",
   projectId: "photomap-6ef26",
   storageBucket: "photomap-6ef26.appspot.com",
