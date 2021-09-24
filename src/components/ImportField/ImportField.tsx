@@ -1,4 +1,6 @@
 import React, { ChangeEvent } from "react";
+import EXIF from "exif-js";
+
 import {
   Background,
   ImportContent,
@@ -14,15 +16,53 @@ import { useState } from "react";
 
 //@ts-ignore
 const ImportField = ({ closeImportingView }) => {
-  const [currentImage, setCurrentImage] = useState("img");
+  const [currentImage, setCurrentImage] = useState({
+    source: "img",
+    latitude: 0,
+    longitude: 0,
+  });
+
+  function ConvertDMSToDD(degrees: number, minutes: any, seconds: any) {
+    var dd = degrees + minutes / 60 + seconds / (60 * 60);
+
+    // if (direction === "S" || direction === "W") {
+    //   dd = dd * -1;
+    // } // Don't do anything for N or E
+    return dd;
+  }
 
   //@ts-ignore
   const currentImageHandler = (e): void => {
-    let src: string = URL?.createObjectURL(e?.target?.files[0]);
-    {
-      src && setCurrentImage(src);
-    }
-    console.log(src);
+    let img = e?.target?.files[0];
+    let src: string = URL?.createObjectURL(img);
+    EXIF.getData(img, function () {
+      //@ts-ignore
+      let getLongitude = EXIF.getTag(img, "GPSLongitude");
+      let getLatitude = EXIF.getTag(img, "GPSLatitude");
+
+      let longitude = `${getLongitude}`;
+      let latitude = `${getLatitude}`;
+
+      let longitudeTab = longitude.split(",");
+      let latitudeTab = latitude.split(",");
+
+      console.log(longitudeTab, latitudeTab);
+
+      src &&
+        setCurrentImage({
+          source: src,
+          latitude: ConvertDMSToDD(
+            parseInt(latitudeTab[0]),
+            latitudeTab[1],
+            latitudeTab[2]
+          ),
+          longitude: ConvertDMSToDD(
+            parseInt(longitudeTab[0]),
+            longitudeTab[1],
+            longitudeTab[2]
+          ),
+        });
+    });
   };
 
   return (
@@ -49,10 +89,12 @@ const ImportField = ({ closeImportingView }) => {
       </form>
 
       <CloseButton onClick={closeImportingView}>
-        <h2> {currentImage !== "img" ? "Accept" : "Close"}</h2>
+        <h2> {currentImage.source !== "img" ? "Accept" : "Close"}</h2>
       </CloseButton>
       <ImageWrapper>
-        <Image src={currentImage} alt="" />
+        <Image src={currentImage.source} alt="" id="dupa" />
+        <p>{currentImage.longitude}</p>
+        <p>{currentImage.latitude}</p>
       </ImageWrapper>
     </Background>
   );
