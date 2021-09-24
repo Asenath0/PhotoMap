@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import React from "react";
 import EXIF from "exif-js";
 
 import {
@@ -12,31 +12,42 @@ import {
   Image,
   CloseButton,
 } from "./ImportFieldStyle";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
-//@ts-ignore
-const ImportField = ({ closeImportingView }) => {
+type propType = {
+  closeImportingView: () => void;
+};
+
+const ImportField = ({ closeImportingView }: propType) => {
   const [currentImage, setCurrentImage] = useState({
     source: "img",
     latitude: 0,
-    longitude: 0,
+    longitude: 0
   });
 
-  function ConvertDMSToDD(degrees: number, minutes: any, seconds: any) {
-    var dd = degrees + minutes / 60 + seconds / (60 * 60);
+  const inputRef = useRef(null);
 
-    // if (direction === "S" || direction === "W") {
-    //   dd = dd * -1;
-    // } // Don't do anything for N or E
+  function ConvertDMSToDD(degrees: number, minutes: number, seconds: number) {
+    var dd = degrees + minutes/60 + seconds/(60*60);
     return dd;
   }
 
-  //@ts-ignore
-  const currentImageHandler = (e): void => {
-    let img = e?.target?.files[0];
-    let src: string = URL?.createObjectURL(img);
-    EXIF.getData(img, function () {
-      //@ts-ignore
+  const currentImageHandler = (): void => {
+    //@ts-ignore
+    let img = inputRef.current.files[0];
+
+    if (img !== null && img !== undefined) {
+      const fileType = img["type"];
+      const validImageTypes = [
+        "image/gif",
+        "image/jpg",
+        "image/png",
+        "image/jpeg",
+      ];
+
+      if (validImageTypes.includes(fileType)) {
+        let src: string = URL?.createObjectURL(img);
+     EXIF.getData(img, function () {
       let getLongitude = EXIF.getTag(img, "GPSLongitude");
       let getLatitude = EXIF.getTag(img, "GPSLatitude");
 
@@ -46,23 +57,27 @@ const ImportField = ({ closeImportingView }) => {
       let longitudeTab = longitude.split(",");
       let latitudeTab = latitude.split(",");
 
-      console.log(longitudeTab, latitudeTab);
-
       src &&
         setCurrentImage({
           source: src,
           latitude: ConvertDMSToDD(
             parseInt(latitudeTab[0]),
-            latitudeTab[1],
-            latitudeTab[2]
+            parseInt(latitudeTab[1]),
+            parseInt(latitudeTab[2])
           ),
           longitude: ConvertDMSToDD(
             parseInt(longitudeTab[0]),
-            longitudeTab[1],
-            longitudeTab[2]
+            parseInt(longitudeTab[1]),
+            parseInt(longitudeTab[2])
           ),
         });
-    });
+      });
+     } else {
+        setCurrentImage({source: "fail", longitude: 0, latitude:0});
+      }
+    } else {
+      setCurrentImage({source: "fail", longitude: 0, latitude:0});
+    }
   };
 
   return (
@@ -70,10 +85,11 @@ const ImportField = ({ closeImportingView }) => {
       <form>
         <ImportContent>
           <Input
+            ref={inputRef}
             type="file"
             id="input"
-            accept="image/*"
-            onChange={(e) => currentImageHandler(e)}
+            accept="image/gif, image/jpg, image/png, image/jpeg"
+            onChange={currentImageHandler}
           />
 
           <Icon />
@@ -92,7 +108,7 @@ const ImportField = ({ closeImportingView }) => {
         <h2> {currentImage.source !== "img" ? "Accept" : "Close"}</h2>
       </CloseButton>
       <ImageWrapper>
-        <Image src={currentImage.source} alt="" id="dupa" />
+        <Image src={currentImage.source} alt={currentImage.source === "fail" ? "Loading image failed" : "Load image"}/>
         <p>{currentImage.longitude}</p>
         <p>{currentImage.latitude}</p>
       </ImageWrapper>
