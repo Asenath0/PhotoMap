@@ -9,6 +9,7 @@ import {
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { useContext } from "react";
 import AuthContext from "../../store/auth-context";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const authContext = useContext(AuthContext);
@@ -32,9 +33,11 @@ const Login = () => {
       <LoginCard>
         <Title>Sign in with...</Title>
         <CardWrapper>
+          <Link to="/">
           <LoginButton onClick={authGoogle}>
             <FaGoogle />
           </LoginButton>
+          </Link>
         </CardWrapper>
       </LoginCard>
     </Container>

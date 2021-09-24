@@ -9,15 +9,18 @@ const AuthContext = React.createContext({
 });
 
 export const AuthContextProvider = ({ children }) => {
-  const [token, setToken] = useState(null);
+  const initToken = localStorage.getItem("token");
+  const [token, setToken] = useState(initToken);
 
   const userTokenStatus = !!token;
 
   const loginHandler = (token) => {
+    localStorage.setItem("token", token);
     setToken(token);
   };
 
   const logoutHandler = () => {
+    localStorage.removeItem("token");
     setToken(null);
   };
 
@@ -33,4 +36,4 @@ export const AuthContextProvider = ({ children }) => {
   );
 };
 
-export default AuthContext
+export default AuthContext;

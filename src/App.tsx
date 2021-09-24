@@ -1,5 +1,14 @@
 import Login from "./components/Login/Login";
 import { initializeApp } from "firebase/app";
+import { useContext } from "react";
+import AuthContext from "./store/auth-context";
+import Dashboard from "./components/Dashboard/Dashboard";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -14,10 +23,33 @@ const firebaseConfig = {
 initializeApp(firebaseConfig);
 
 function App() {
+  const authContext = useContext(AuthContext);
+
   return (
-    <div className="App">
-      <Login />
-    </div>
+    <Router>
+      <Switch>
+        {authContext.isLoggedIn && (
+          <>
+            <Route exact path="/">
+              <Dashboard />
+            </Route>
+            <Route path="*">
+              <Redirect to="/" />
+            </Route>
+          </>
+        )}
+        {!authContext.isLoggedIn && (
+          <>
+            <Route exact path="/login">
+              <Login />
+            </Route>
+            <Route path="*">
+              <Redirect to="/login" />
+            </Route>
+          </>
+        )}
+      </Switch>
+    </Router>
   );
 }
 
