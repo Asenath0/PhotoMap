@@ -10,20 +10,39 @@ import {
   Image,
   CloseButton,
 } from "./ImportFieldStyle";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 type propType = {
-  closeImportingView: () => void
-}
+  closeImportingView: () => void;
+};
 
 const ImportField = ({ closeImportingView }: propType) => {
   const [currentImage, setCurrentImage] = useState("img");
 
-  const currentImageHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  const inputRef = useRef(null);
+
+  const currentImageHandler = (): void => {
     //@ts-ignore
-    let img = e?.target?.files[0]
-    let src: string | null = URL?.createObjectURL(img);
-    src !== null && setCurrentImage(src);
+    let img = inputRef.current.files[0];
+
+    if (img !== null && img !== undefined) {
+      const fileType = img["type"];
+      const validImageTypes = [
+        "image/gif",
+        "image/jpg",
+        "image/png",
+        "image/jpeg",
+      ];
+
+      if (validImageTypes.includes(fileType)) {
+        let src: string = URL?.createObjectURL(img);
+        src !== null && setCurrentImage(src);
+      } else {
+        setCurrentImage("fail");
+      }
+    } else {
+      setCurrentImage("fail");
+    }
   };
 
   return (
@@ -31,10 +50,11 @@ const ImportField = ({ closeImportingView }: propType) => {
       <form>
         <ImportContent>
           <Input
+            ref={inputRef}
             type="file"
             id="input"
-            accept="image/*"
-            onChange={(e) => currentImageHandler(e)}
+            accept="image/gif, image/jpg, image/png, image/jpeg"
+            onChange={currentImageHandler}
           />
 
           <Icon />
@@ -53,7 +73,10 @@ const ImportField = ({ closeImportingView }: propType) => {
         <h2> {currentImage !== "img" ? "Accept" : "Close"}</h2>
       </CloseButton>
       <ImageWrapper>
-        <Image src={currentImage} alt={currentImage !== "img" ? "Loading image failed" : "Load image"} />
+        <Image
+          src={currentImage}
+          alt={currentImage === "fail" ? "Loading image failed" : "Load image"}
+        />
       </ImageWrapper>
     </Background>
   );
