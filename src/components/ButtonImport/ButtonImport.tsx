@@ -6,7 +6,7 @@ import ImportField from "../ImportField/ImportField";
 const ButtonImport = () => {
   const [isImportingOn, setIsImportingOn] = useState(false);
 
-  const isImportingOnHandler = () => setIsImportingOn(!isImportingOn);
+  const isImportingOnHandler = (): void => setIsImportingOn(!isImportingOn);
 
   return (
     <div>

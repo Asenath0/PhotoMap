@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import React from "react";
 import {
   Background,
   ImportContent,
@@ -12,17 +12,18 @@ import {
 } from "./ImportFieldStyle";
 import { useState } from "react";
 
-//@ts-ignore
-const ImportField = ({ closeImportingView }) => {
+type propType = {
+  closeImportingView: () => void
+}
+
+const ImportField = ({ closeImportingView }: propType) => {
   const [currentImage, setCurrentImage] = useState("img");
 
-  //@ts-ignore
-  const currentImageHandler = (e): void => {
-    let src: string = URL?.createObjectURL(e?.target?.files[0]);
-    {
-      src && setCurrentImage(src);
-    }
-    console.log(src);
+  const currentImageHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    //@ts-ignore
+    let img = e?.target?.files[0]
+    let src: string | null = URL?.createObjectURL(img);
+    src !== null && setCurrentImage(src);
   };
 
   return (
@@ -52,7 +53,7 @@ const ImportField = ({ closeImportingView }) => {
         <h2> {currentImage !== "img" ? "Accept" : "Close"}</h2>
       </CloseButton>
       <ImageWrapper>
-        <Image src={currentImage} alt="" />
+        <Image src={currentImage} alt={currentImage !== "img" ? "Loading image failed" : "Load image"} />
       </ImageWrapper>
     </Background>
   );
