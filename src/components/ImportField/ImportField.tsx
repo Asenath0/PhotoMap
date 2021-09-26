@@ -10,40 +10,17 @@ import {
   Image,
   CloseButton,
 } from "./ImportFieldStyle";
-import { useState, useRef } from "react";
+
 
 interface ImportFieldInterface {
-  closeImportingView: () => void;
+  isImportingOnHandler: () => void;
+  inputRef: React.Ref<HTMLInputElement>; 
+  currentImage: string; 
+  currentImageHandler: () => void; 
 };
 
-const ImportField: FC<ImportFieldInterface> = ({ closeImportingView }) => {
-  const [currentImage, setCurrentImage] = useState("img");
-
-  const inputRef = useRef(null);
-
-  const currentImageHandler = (): void => {
-    //@ts-ignore
-    let img = inputRef.current.files[0];
-
-    if (img !== null && img !== undefined) {
-      const fileType = img["type"];
-      const validImageTypes = [
-        "image/gif",
-        "image/jpg",
-        "image/png",
-        "image/jpeg",
-      ];
-
-      if (validImageTypes.includes(fileType)) {
-        let src: string = URL?.createObjectURL(img);
-        src !== null && setCurrentImage(src);
-      } else {
-        setCurrentImage("fail");
-      }
-    } else {
-      setCurrentImage("fail");
-    }
-  };
+const ImportField: FC<ImportFieldInterface> = ({ isImportingOnHandler, inputRef, currentImage, currentImageHandler }) => {
+  
 
   return (
     <Background>
@@ -69,7 +46,7 @@ const ImportField: FC<ImportFieldInterface> = ({ closeImportingView }) => {
         </ImportContent>
       </form>
 
-      <CloseButton onClick={closeImportingView}>
+      <CloseButton onClick={isImportingOnHandler}>
         <h2> {currentImage !== "img" ? "Accept" : "Close"}</h2>
       </CloseButton>
       <ImageWrapper>
