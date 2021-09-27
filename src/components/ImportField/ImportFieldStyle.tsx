@@ -65,26 +65,36 @@ export const ChooseLink = styled.label`
   }
 `;
 
-export const ImageWrapper = styled.div`
-  height: 200px;
-  max-width: 100%;
-  margin: 2em;
-`;
+interface ImageInterface {
+  readonly source: string;
+}
 
-export const Image = styled.img`
-  max-height: 100%;
-  max-width: 100%;
+export const Image = styled.div<ImageInterface>`
+  height: 200px;
+  width: 90%;
+  margin: 2em;
+  box-sizing: border-box;
+  background-image: url(${(props) => props.source});
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+
+  color: whitesmoke;
+  font-size: 1.2em;
+  text-align: center;
 `;
 
 export const CloseButton = styled.button`
   color: whitesmoke;
   background: black;
   border: none;
-  padding: 0 3em;
+  padding: 0.83em 3em;
   border-radius: 5px;
   transition: 0.2s;
   cursor: pointer;
   margin: 2em;
+  font-size: 1.5em;
+  font-weight: 700;
 
   &:hover {
     background: steelblue;
