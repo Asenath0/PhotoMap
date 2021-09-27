@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import { TileLayer, Marker, Popup } from "react-leaflet";
 import ChangeMapPosition from "./ChangeMapPosition";
 import {
