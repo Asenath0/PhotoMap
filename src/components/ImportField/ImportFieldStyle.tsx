@@ -4,6 +4,7 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 export const Background = styled.div`
   background: rgba(0, 0, 0, 0.8);
   position: absolute;
+  z-index: 3;
   width: 100%;
   min-height: 100%;
   display: flex;
@@ -13,6 +14,7 @@ export const Background = styled.div`
   overflow: auto;
   padding: 1em;
   box-sizing: border-box;
+  
 `;
 
 export const Input = styled.input`
