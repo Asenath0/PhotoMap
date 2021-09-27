@@ -21,8 +21,11 @@ const Login = () => {
       .then((result) => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential?.accessToken;
-        authContext.login(token);
-        authContext.setName(result.user.displayName);
+        const name = result?.user.displayName;
+        const uid = result?.user.uid;
+        authContext.login(token, uid, name);
+        // authContext.setName(name);
+        // authContext.setUserId(uid);
       })
       .catch((err) => {
         console.log(err);
