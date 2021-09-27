@@ -5,21 +5,22 @@ import { getDocs, collection, query, where } from "firebase/firestore";
 
 const Dashboard = () => {
   const authContext = useContext(AuthContext);
-  const db = getFirestore();
-  const [state, setstate] = useState();
-
-  const getData = async () => {
-    const ref = collection(db, "images");
-    const q = query(ref, where("userId", "==", authContext.userId))
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      console.log(doc.data())
-    });
-  };
+  const [data, setData] = useState();
 
   useEffect(() => {
+    const db = getFirestore();
+    const getData = async () => {
+      const ref = collection(db, "images");
+      const q = query(ref, where("userId", "==", authContext.userId));
+      const querySnapshot = await getDocs(q);
+      const items = [];
+      querySnapshot.forEach((doc) => {
+        items.push(doc.data());
+      });
+      setData(items);
+    };
     getData();
-  }, []);
+  }, [authContext]);
 
   return (
     <div>

@@ -2,7 +2,7 @@ import Login from "./components/Login/Login";
 import { initializeApp } from "firebase/app";
 import { useContext } from "react";
 import AuthContext from "./store/auth-context";
-import Dashboard from "./components/Dashboard/Dashboard";
+import Dashboard from "./components/Dashboard/Dashboard.js";
 import {
   BrowserRouter as Router,
   Switch,
