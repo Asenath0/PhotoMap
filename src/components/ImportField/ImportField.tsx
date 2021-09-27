@@ -1,4 +1,6 @@
-import React, {FC} from "react";
+import React, { FC } from "react";
+import EXIF from "exif-js";
+
 import {
   Background,
   ImportContent,
@@ -6,7 +8,6 @@ import {
   Icon,
   FlexRowCenter,
   ChooseLink,
-  ImageWrapper,
   Image,
   CloseButton,
 } from "./ImportFieldStyle";
@@ -14,12 +15,20 @@ import { useState, useRef } from "react";
 
 interface ImportFieldInterface {
   closeImportingView: () => void;
-};
+}
 
 const ImportField: FC<ImportFieldInterface> = ({ closeImportingView }) => {
-  const [currentImage, setCurrentImage] = useState("img");
+  const [currentImage, setCurrentImage] = useState({
+    source: "",
+    latitude: 0,
+    longitude: 0,
+    status: "Load image",
+  });
 
   const inputRef = useRef(null);
+
+  const ConvertDMSToDD = (degrees: number, minutes: number, seconds: number) =>
+    degrees + minutes / 60 + seconds / (60 * 60);
 
   const currentImageHandler = (): void => {
     //@ts-ignore
@@ -36,12 +45,56 @@ const ImportField: FC<ImportFieldInterface> = ({ closeImportingView }) => {
 
       if (validImageTypes.includes(fileType)) {
         let src: string = URL?.createObjectURL(img);
-        src !== null && setCurrentImage(src);
+        EXIF.getData(img, function () {
+          let getLongitude = EXIF.getTag(img, "GPSLongitude");
+          let getLatitude = EXIF.getTag(img, "GPSLatitude");
+
+          if (getLongitude === undefined || getLatitude === undefined) {
+            setCurrentImage({
+              source: "",
+              longitude: 0,
+              latitude: 0,
+              status: "Sorry, this image has no GPS information",
+            });
+          } else {
+            let longitude = `${getLongitude}`;
+            let latitude = `${getLatitude}`;
+
+            let longitudeTab = longitude.split(",");
+            let latitudeTab = latitude.split(",");
+
+            src &&
+              setCurrentImage({
+                source: src,
+                latitude: ConvertDMSToDD(
+                  parseInt(latitudeTab[0]),
+                  parseInt(latitudeTab[1]),
+                  parseInt(latitudeTab[2])
+                ),
+                longitude: ConvertDMSToDD(
+                  parseInt(longitudeTab[0]),
+                  parseInt(longitudeTab[1]),
+                  parseInt(longitudeTab[2])
+                ),
+                status: "Loaded",
+              });
+          }
+        });
       } else {
-        setCurrentImage("fail");
+        setCurrentImage({
+          source: "",
+          longitude: 0,
+          latitude: 0,
+          status: "Wrong file extention, please use .jpeg, .jpg, .png or .gif",
+        });
       }
     } else {
-      setCurrentImage("fail");
+      setCurrentImage({
+        source: "",
+        longitude: 0,
+        latitude: 0,
+        status: "Loading image failed",
+      });
     }
   };
 
@@ -70,14 +123,11 @@ const ImportField: FC<ImportFieldInterface> = ({ closeImportingView }) => {
       </form>
 
       <CloseButton onClick={closeImportingView}>
-        <h2> {currentImage !== "img" ? "Accept" : "Close"}</h2>
+        {currentImage.status === "Loaded" ? "Accept" : "Close"}
       </CloseButton>
-      <ImageWrapper>
-        <Image
-          src={currentImage}
-          alt={currentImage === "fail" ? "Loading image failed" : "Load image"}
-        />
-      </ImageWrapper>
+      <Image source={currentImage.source}>
+        {currentImage.status !== "Loaded" && currentImage.status}
+      </Image>
     </Background>
   );
 };

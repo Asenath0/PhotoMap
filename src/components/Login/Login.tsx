@@ -24,8 +24,6 @@ const Login = () => {
         const name = result?.user.displayName;
         const uid = result?.user.uid;
         authContext.login(token, uid, name);
-        // authContext.setName(name);
-        // authContext.setUserId(uid);
       })
       .catch((err) => {
         console.log(err);
