@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import { useContext } from "react";
 import AuthContext from "./store/auth-context";
 import Dashboard from "./components/Dashboard/Dashboard";
+import firebase from "firebase/app";
 import {
   BrowserRouter as Router,
   Switch,
@@ -14,6 +15,7 @@ const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
   authDomain: "photomap-6ef26.firebaseapp.com",
   projectId: "photomap-6ef26",
+  databaseURl: process.env.REACT_APP_DATABASE,
   storageBucket: "photomap-6ef26.appspot.com",
   messagingSenderId: "432171368717",
   appId: "1:432171368717:web:d98a9fac7c9b88119c3044",
