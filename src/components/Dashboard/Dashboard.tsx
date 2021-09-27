@@ -33,8 +33,18 @@ const Dashboard = () => {
 
   const inputRef: React.Ref<HTMLInputElement> = useRef(null);
 
-  const ConvertDMSToDD = (degrees: number, minutes: number, seconds: number) =>
-    degrees + minutes / 60 + seconds / (60 * 60);
+  const ConvertDMSToDD = (
+    degrees: number,
+    minutes: number,
+    seconds: number,
+    direction: string
+  ) => {
+    let dd = degrees + minutes / 60 + seconds / (60 * 60);
+
+    (direction === "S" || direction === "W") && (dd = dd * -1);
+
+    return dd;
+  };
 
   const currentImageHandler = (): void => {
     //@ts-ignore
@@ -55,6 +65,8 @@ const Dashboard = () => {
         EXIF.getData(img, function () {
           let getLongitude = EXIF.getTag(img, "GPSLongitude");
           let getLatitude = EXIF.getTag(img, "GPSLatitude");
+          let getLongitudeTag = EXIF.getTag(img, "GPSLongitudeRef");
+          let getLatitudeTag = EXIF.getTag(img, "GPSLatitudeRef");
 
           if (getLongitude === undefined || getLatitude === undefined) {
             setCurrentImage({
@@ -76,12 +88,14 @@ const Dashboard = () => {
                 latitude: ConvertDMSToDD(
                   parseInt(latitudeTab[0]),
                   parseInt(latitudeTab[1]),
-                  parseInt(latitudeTab[2])
+                  parseInt(latitudeTab[2]),
+                  getLatitudeTag
                 ),
                 longitude: ConvertDMSToDD(
                   parseInt(longitudeTab[0]),
                   parseInt(longitudeTab[1]),
-                  parseInt(longitudeTab[2])
+                  parseInt(longitudeTab[2]),
+                  getLongitudeTag
                 ),
                 status: "Loaded",
               });
