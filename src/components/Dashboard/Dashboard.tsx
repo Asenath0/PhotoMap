@@ -8,6 +8,7 @@ const Dashboard = () => {
     <div>
       <h1>Dashboard</h1>
       <h2>{authContext.name}</h2>
+      <h2>{authContext.userId}</h2>
       <button onClick={authContext.logout}>Logout</button>
     </div>
   );
