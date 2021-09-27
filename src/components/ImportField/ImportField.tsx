@@ -1,5 +1,4 @@
 import React, { FC } from "react";
-import EXIF from "exif-js";
 
 import {
   Background,
@@ -8,22 +7,30 @@ import {
   Icon,
   FlexRowCenter,
   ChooseLink,
-  ImageWrapper,
   Image,
   CloseButton,
 } from "./ImportFieldStyle";
 
-
 interface ImportFieldInterface {
   isImportingOnHandler: () => void;
-  inputRef: React.Ref<HTMLInputElement>; 
-  currentImage: string; 
-  currentImageHandler: () => void; 
-};
+  inputRef: React.Ref<HTMLInputElement>;
+  currentImage: {
+    source: string;
+    longitude: number;
+    latitude: number;
+    status: string;
+  };
+  currentImageHandler: () => void;
+  coordinatesHandler: () => void;
+}
 
-const ImportField: FC<ImportFieldInterface> = ({ isImportingOnHandler, inputRef, currentImage, currentImageHandler }) => {
-  
-
+const ImportField: FC<ImportFieldInterface> = ({
+  isImportingOnHandler,
+  inputRef,
+  currentImage,
+  currentImageHandler,
+  coordinatesHandler,
+}) => {
   return (
     <Background>
       <form>
@@ -48,12 +55,17 @@ const ImportField: FC<ImportFieldInterface> = ({ isImportingOnHandler, inputRef,
         </ImportContent>
       </form>
 
-      <CloseButton onClick={isImportingOnHandler}>
-        <h2> {currentImage !== "img" ? "Accept" : "Close"}</h2>
+      <CloseButton
+        onClick={() => {
+          isImportingOnHandler();
+          coordinatesHandler();
+        }}
+      >
+        {currentImage.status === "Loaded" ? "Accept" : "Close"}
       </CloseButton>
-      <ImageWrapper>
-        <Image src={currentImage} alt={currentImage} />
-      </ImageWrapper>
+      <Image source={currentImage.source}>
+        {currentImage.status !== "Loaded" && currentImage.status}
+      </Image>
     </Background>
   );
 };

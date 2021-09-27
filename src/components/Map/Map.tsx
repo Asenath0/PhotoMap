@@ -1,5 +1,6 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { TileLayer, Marker, Popup } from "react-leaflet";
+import ChangeMapPosition from "./ChangeMapPosition";
 import {
   MapWrapper,
   MapComponent,
@@ -9,24 +10,23 @@ import {
 } from "./MapStyle";
 
 interface MapInterface {
-  image: {
-    source: string;
-    latitude: number;
-    longitude: number;
-  };
+  currentImage: string;
+  coordinates: [number, number];
 }
-const Map: FC<MapInterface> = ({ image }) => {
-  let src = image.source;
-  let coordinates: [number, number] = [image.latitude, image.longitude];
+const Map: FC<MapInterface> = ({ currentImage, coordinates }) => {
   return (
     <MapWrapper>
-      <MapComponent center={[-10, 30]} zoom={5} scrollWheelZoom={true}>
+      <MapComponent
+        center={[coordinates[0], coordinates[1]]}
+        zoom={5}
+        scrollWheelZoom={true}
+      >
         <TileLayer url="https://stamen-tiles.a.ssl.fastly.net/toner/{z}/{x}/{y}.png" />
-        {src !== "img" && (
-          <Marker position={coordinates}>
+        {currentImage !== "" && (
+          <Marker position={[coordinates[0], coordinates[1]]}>
             <Popup>
               <FlexRow>
-                <Image src={src} alt="Loading failed" />
+                <Image src={currentImage} alt="Loading failed" />
                 <div>
                   <PopUpText>Coordinates:</PopUpText>
                   <PopUpText>{coordinates[0]}</PopUpText>
@@ -36,6 +36,7 @@ const Map: FC<MapInterface> = ({ image }) => {
             </Popup>
           </Marker>
         )}
+        <ChangeMapPosition coordinates={coordinates} />
       </MapComponent>
     </MapWrapper>
   );
