@@ -74,6 +74,7 @@ export const ImageWrapper = styled.div`
 export const Image = styled.img`
   max-height: 100%;
   max-width: 100%;
+  color: white;
 `;
 
 export const CloseButton = styled.button`
