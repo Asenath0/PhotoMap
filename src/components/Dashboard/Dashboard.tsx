@@ -1,14 +1,37 @@
 import Map from "../Map/Map";
 import ImportField from "../ImportField/ImportField";
-import { useState, useRef } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import Header from "../Header/Header";
 import ImportFieldAnimation from "../ImportField/ImportFieldAnimation";
 import Footer from "../Footer/Footer";
 import EXIF from "exif-js";
 import ButtonImport from "../ButtonImport/ButtonImport";
+import AuthContext from "../../store/auth-context";
+import { getFirestore } from "firebase/firestore";
+import { getDocs, collection, query, where } from "firebase/firestore";
 
-const Dashboard = () => {
+const Dashboard1 = () => {
   const [shouldAnimate, setShouldAnimate] = useState(false);
+  const authContext = useContext(AuthContext);
+  const [data, setData] = useState();
+
+  useEffect(() => {
+    const db = getFirestore();
+    const getData = async () => {
+      const ref = collection(db, "images");
+      const q = query(ref, where("userId", "==", authContext.userId));
+      const querySnapshot = await getDocs(q);
+      //@ts-ignore
+      const items = [];
+      querySnapshot.forEach((doc) => {
+        items.push(doc.data());
+      });
+      //@ts-ignore
+      setData(items);
+    };
+    getData();
+  }, [authContext]);
+
   const shouldAnimateHandler = (bool: boolean) => setShouldAnimate(bool);
 
   const [isImportingOn, setIsImportingOn] = useState(false);
@@ -149,4 +172,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Dashboard1;
