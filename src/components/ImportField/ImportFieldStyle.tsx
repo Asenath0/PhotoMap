@@ -4,10 +4,11 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 export const Background = styled.div`
   background: rgba(0, 0, 0, 0.8);
   position: absolute;
+  z-index: 3;
   width: 100%;
   min-height: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   flex-flow: column nowrap;
   overflow: auto;
@@ -40,6 +41,7 @@ export const ImportContent = styled.div`
   justify-content: center;
   flex-flow: column wrap;
   align-items: center;
+  margin-top: 8vh;
 `;
 
 export const Icon = styled(FaCloudUploadAlt)`
@@ -72,7 +74,6 @@ interface ImageInterface {
 export const Image = styled.div<ImageInterface>`
   height: 200px;
   width: 90%;
-  margin: 2em;
   box-sizing: border-box;
   background-image: url(${(props) => props.source});
   background-position: center;
