@@ -3,10 +3,10 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 
 export const Background = styled.div`
   background: rgba(0, 0, 0, 0.8);
-  position: absolute;
+  position: fixed;
   z-index: 3;
   width: 100%;
-  min-height: 100%;
+  max-height: 100%;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -14,6 +14,7 @@ export const Background = styled.div`
   overflow: auto;
   padding: 1em;
   box-sizing: border-box;
+  overflow-x: hidden;
 `;
 
 export const Input = styled.input`
@@ -72,13 +73,13 @@ interface ImageInterface {
 }
 
 export const Image = styled.div<ImageInterface>`
-  height: 200px;
+  min-height: 200px;
   width: 90%;
-  box-sizing: border-box;
   background-image: url(${(props) => props.source});
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;
+  margin-bottom: 300px;
 
   color: whitesmoke;
   font-size: 1.2em;

@@ -6,8 +6,16 @@ import ImportFieldAnimation from "../ImportField/ImportFieldAnimation";
 import Footer from "../Footer/Footer";
 import EXIF from "exif-js";
 import ButtonImport from "../ButtonImport/ButtonImport";
+import { FlexRow } from "../Map/MapStyle";
+import { Wrapper } from "./DashboardStyle";
+import FullView from "../Map/FullView";
 
 const Dashboard = () => {
+  const [isFullViewVisible, setIsFullViewVisible] = useState(false);
+
+  const isFullViewVisibleHandler = () =>
+    setIsFullViewVisible((isFullViewVisible) => !isFullViewVisible);
+
   const [shouldAnimate, setShouldAnimate] = useState(false);
   const shouldAnimateHandler = (bool: boolean) => setShouldAnimate(bool);
 
@@ -120,7 +128,8 @@ const Dashboard = () => {
   };
 
   return (
-    <div>
+    <Wrapper isImportingOn={isImportingOn}>
+      {isFullViewVisible && <FullView isFullViewVisibleHandler={isFullViewVisibleHandler} image={currentImage.source} />}
       {shouldAnimate && (
         <ImportFieldAnimation
           isImportingOn={isImportingOn}
@@ -137,7 +146,7 @@ const Dashboard = () => {
       )}
 
       <Header />
-      <Map currentImage={currentImage.source} coordinates={coordinates} />
+      <Map currentImage={currentImage.source} coordinates={coordinates} isFullViewVisibleHandler={isFullViewVisibleHandler}/>
 
       <ButtonImport
         ImportingHandler={isImportingOnHandler}
@@ -145,7 +154,7 @@ const Dashboard = () => {
       />
 
       <Footer />
-    </div>
+    </Wrapper>
   );
 };
 
